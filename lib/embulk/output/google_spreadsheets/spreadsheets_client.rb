@@ -62,7 +62,11 @@ module Embulk
         end
 
         def clear_records
-          service.clear_values spreadsheets_id, all_records_range
+          spreadsheet = service.get_spreadsheet spreadsheets_id
+          sheets = spreadsheet.sheets
+          col_len = sheets[0].properties.grid_properties.column_count
+          end_col = col_num_to_a1(task["start_column"] + col_len - 1)
+          service.clear_values spreadsheets_id, "#{range}:#{end_col}"
         end
 
         def headers
